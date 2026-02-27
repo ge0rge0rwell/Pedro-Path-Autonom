@@ -16,7 +16,7 @@ import com.pedropathing.geometry.Pose;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
+@Autonomous(name = "Pedro Intake", group = "Autonomous")
 @Configurable
 public class AutoBlueClose extends OpMode {
 
