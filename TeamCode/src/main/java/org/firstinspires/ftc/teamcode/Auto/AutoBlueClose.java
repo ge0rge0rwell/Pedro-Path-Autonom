@@ -37,15 +37,11 @@ public class AutoBlueClose extends OpMode {
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
-
+        follower.setStartingPose(new Pose(56.0, 8.0, Math.toRadians(90)));
         paths = new Paths(follower);
-
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setPower(0);
-
         panelsTelemetry.addLine("Initialized");
         panelsTelemetry.update(telemetry);
     }
@@ -60,8 +56,7 @@ public class AutoBlueClose extends OpMode {
     public void loop() {
         follower.update();
         autonomousPathUpdate();
-
-        panelsTelemetry.debug("State", autoPathState);
+        panelsTelemetry.debug("State", autoPathState.name());
         panelsTelemetry.debug("Intake Power", intake.getPower());
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
@@ -74,7 +69,6 @@ public class AutoBlueClose extends OpMode {
         public PathChain LK3ATI;
 
         public Paths(Follower follower) {
-
             KrmzKarelkToplar = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(56.000, 8.000),
@@ -95,25 +89,22 @@ public class AutoBlueClose extends OpMode {
     }
 
     public void autonomousPathUpdate() {
-
         switch (autoPathState) {
-
             case ILKPATH:
-                intake.setPower(1.0);
-
+                if (intake.getPower() == 0) {
+                    intake.setPower(1.0);
+                }
                 if (!follower.isBusy()) {
                     intake.setPower(0);
                     follower.followPath(paths.LK3ATI);
                     autoPathState = AutoPathState.IKINCIPATH;
                 }
                 break;
-
             case IKINCIPATH:
                 if (!follower.isBusy()) {
                     autoPathState = AutoPathState.DONE;
                 }
                 break;
-
             case DONE:
                 intake.setPower(0);
                 break;
